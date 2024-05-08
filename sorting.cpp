@@ -24,7 +24,8 @@ void displayHeadAndTail(Node*);
 void swap(Node*, Node*);
 void bubbleSort(Node*, int);
 void optimizedBubbleSort(Node*, int);
-
+void selectionSort(Node*, int);
+void optimizedSelectionSort(Node*, int);
 
 int main()
 {
@@ -32,7 +33,8 @@ int main()
 
     Node* copy1 = nullptr;
     Node* copy2 = nullptr;
-
+    Node* copy3 = nullptr;
+    Node* copy4 = nullptr;
     int iListLen = 12;
 
     for (int i = 0; i < iListLen; i++)
@@ -40,7 +42,8 @@ int main()
         int iNum = rand() %100 + 1;  // Gera um número entre 1 e 100
         insertEnd(&copy1, iNum);
         insertEnd(&copy2, iNum);
-
+        insertEnd(&copy3, iNum);
+        insertEnd(&copy4, iNum);
     }
 
     displayList(copy1);
@@ -60,16 +63,32 @@ int main()
     auto timeDuration2 = std::chrono::duration_cast<std::chrono::nanoseconds>(timeStop2 - timeStart2);
     cout << "Temp optimizedBubbleSort: " <<  timeDuration2.count() << " nanoseconds" <<  endl;
 
+    auto timeStart3 = std::chrono::high_resolution_clock::now();
+    selectionSort(copy3, iListLen);
+    auto timeStop3 = std::chrono::high_resolution_clock::now();
+    auto timeDuration3 = std::chrono::duration_cast<std::chrono::nanoseconds>(timeStop3 - timeStart3);
+    cout << "Temp selectionSort: " <<  timeDuration3.count() << " nanoseconds" <<  endl;
+
+    auto timeStart4 = std::chrono::high_resolution_clock::now();
+    optimizedSelectionSort(copy4, iListLen);
+    auto timeStop4 = std::chrono::high_resolution_clock::now();
+    auto timeDuration4 = std::chrono::duration_cast<std::chrono::nanoseconds>(timeStop4 - timeStart4);
+    cout << "Temp optimizedSelectionSort: " <<  timeDuration4.count() << " nanoseconds" <<  endl;
+
     cout << "\nOs resultados de cada ordenação foram, respectivamente:\n" << endl;
 
     displayList(copy1);
     displayList(copy2);
+    displayList(copy3);
+    displayList(copy4);
 
 
     cout << "\n------------ CRIAÇÃO DE LISTAS DE 10000 ELEMENTOS ------------\n" << endl;
 
     copy1 = nullptr;
     copy2 = nullptr;
+    copy3 = nullptr;
+    copy4 = nullptr;
     iListLen = 10000;
 
     for (int i = 0; i < iListLen; i++)
@@ -77,6 +96,8 @@ int main()
         int iNum = rand() %15000 + 1;  // Gera um número entre 1 e 15000
         insertEnd(&copy1, iNum);
         insertEnd(&copy2, iNum);
+        insertEnd(&copy3, iNum);
+        insertEnd(&copy4, iNum);
     }
 
     displayHeadAndTail(copy1);
@@ -96,10 +117,24 @@ int main()
     timeDuration2 = std::chrono::duration_cast<std::chrono::nanoseconds>(timeStop2 - timeStart2);
     cout << "Temp optimizedBubbleSort:    " <<  timeDuration2.count() << " nanoseconds" <<  endl;
 
+    timeStart3 = std::chrono::high_resolution_clock::now();
+    selectionSort(copy3, iListLen);
+    timeStop3 = std::chrono::high_resolution_clock::now();
+    timeDuration3 = std::chrono::duration_cast<std::chrono::nanoseconds>(timeStop3 - timeStart3);
+    cout << "Temp selectionSort:          " <<  timeDuration3.count() << " nanoseconds" <<  endl;
+
+    timeStart4 = std::chrono::high_resolution_clock::now();
+    optimizedSelectionSort(copy4, iListLen);
+    timeStop4 = std::chrono::high_resolution_clock::now();
+    timeDuration4 = std::chrono::duration_cast<std::chrono::nanoseconds>(timeStop4 - timeStart4);
+    cout << "Temp optimizedSelectionSort: " <<  timeDuration4.count() << " nanoseconds" <<  endl;
+
     cout << "\nOs resultados de cada ordenação foram, respectivamente:\n" << endl;
 
     displayHeadAndTail(copy1);
     displayHeadAndTail(copy2);
+    displayHeadAndTail(copy3);
+    displayHeadAndTail(copy4);
 }
 
 Node* createNode(int iPayload) 
@@ -286,5 +321,64 @@ void optimizedBubbleSort(Node* head, int iListLen)
         }
 
         current = head; // Reinicia a posição atual para o início da lista
+    }
+}
+
+// Implementação do algoritmo Selection Sort
+void selectionSort(Node* head, int iListLen) 
+{
+    Node* current = head; // Ponteiro para o nó atual
+    Node* temp = head; // Ponteiro temporário para auxiliar nas trocas
+
+    // Loop externo para percorrer a lista
+    for (int i = 0; i < iListLen; i++)
+    {
+        temp = current; // Inicializa o ponteiro temporário como o nó atual
+
+        // Loop interno para encontrar o menor elemento não ordenado
+        for (int j = 0; j < iListLen - i; j++)
+        {
+            // Verifica se o valor do nó atual é maior que o valor do nó temporário
+            if (current->iPayload > temp->iPayload)
+            {
+                swap(current, temp); // Troca os nós
+            }
+            temp = temp->ptrNext; // Move para o próximo nó temporário
+        }
+        current = current->ptrNext; // Move para o próximo nó atual
+    }
+}
+
+// Implementação do algoritmo Selection Sort otimizado
+void optimizedSelectionSort(Node* head, int iListLen)
+{
+    Node* current = head; // Ponteiro para o nó atual
+    Node* temp; // Ponteiro temporário para auxiliar nas trocas
+    Node* smallest; // Ponteiro para o menor elemento encontrado
+
+    // Loop externo para percorrer a lista
+    for (int i = 0; i < iListLen; i++)
+    {
+        smallest = current; // Define o menor elemento como o nó atual
+        temp = current->ptrNext; // Inicializa o ponteiro temporário como o próximo nó
+
+        // Loop interno para encontrar o menor elemento não ordenado
+        for (int j = 0; j < iListLen - i - 1; j++)
+        {
+            // Verifica se o valor do nó atual é maior que o valor do nó temporário
+            if (smallest->iPayload > temp->iPayload)
+            {
+                smallest = temp; // Atualiza o menor elemento encontrado
+            }
+            temp = temp->ptrNext; // Move para o próximo nó temporário
+        }
+
+        // Se o menor elemento encontrado for menor que o nó atual, realiza a troca
+        if (smallest->iPayload < current->iPayload)
+        {
+            swap(smallest, current); // Troca os nós
+        }
+        
+        current = current->ptrNext; // Move para o próximo nó atual
     }
 }
