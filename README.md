@@ -18,7 +18,7 @@ This repository contains implementations of two sorting algorithms along with th
 
 # Testing
 
-## Test with a list with 12 elements
+## Test of a list with 12 elements
 
 Using the following list
 ```bash
@@ -39,7 +39,7 @@ Payload: 16 22 28 36 50 63 78 84 87 87 93 94
 Payload: 16 22 28 36 50 63 78 84 87 87 93 94
 Payload: 16 22 28 36 50 63 78 84 87 87 93 94
 ```
-## Test with a list with 10000 elements
+## Test of a list with 10000 elements
 
 Since the list is too big, we may just take a look of the first and last 5 elements
 
